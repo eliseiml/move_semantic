@@ -1,4 +1,4 @@
-﻿#include <string>
+﻿
 #include <iostream>
 
 using namespace std;
@@ -20,29 +20,21 @@ public:
     //Конструктор копирования
     String(const String& s) {
 
-        //Обновляем размер, выделяем память, копируем данные
+        //Копируем данные
         _size = s._size;
         _data = s._data;
-        //_data = new char[_size];
-        //for (int i = 0; i < _size; i++) {
-        //    _data[i] = s._data[i];
-        //}
+
         cout << "[" << this << "]" << " - COPY constructor has been called" << endl;        
     }
 
     //Конструктор перемещения
     String(String&& s){
 
-        //Обновляем размер, выделяем память, копируем данные
+        //Копируем данные
         _size = s._size;
         _data = s._data;
-        //_data = new char[_size];
-        //for (int i = 0; i < _size; i++) {
-        //    _data[i] = s._data[i];
-        //}
 
         //Очищаем исходный объект (у которого забираем данные)
-        //delete[] s._data;
         s._data = nullptr;
         s._size = 0;
 
@@ -59,14 +51,9 @@ public:
         //Очищаем указатель
         _data = nullptr;
 
-        //Выделяем память заново
+        //Копируем данные
         _size = s._size;
         _data = s._data;
-
-        //Копируем данные
-        //for (int i = 0; i < _size; i++) {
-        //    _data[i] = s._data[i];
-        //}
 
         cout << "[" << this << "]" << " - Operator = has been called" << endl;
 
