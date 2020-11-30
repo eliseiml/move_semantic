@@ -1,4 +1,9 @@
-﻿
+﻿/*
+30.11.2020
+1. Добавлен перемещающий опертор присваивания
+2. В конструкторе по умолчанию (с параметром Int) запрещены неявные преобразования
+3. Перемещающий конструктор и оператор присваивания - noexcept
+*/
 #include <iostream>
 
 using namespace std;
@@ -9,8 +14,8 @@ public:
     char* _data;
     int _size;
 
-    //Конструктор по умолчанию
-    String(int nsize = 1) {
+    //Конструктор по умолчанию (с блокировкой неявных преобразований)
+    explicit String(int nsize = 1) {
         _size = nsize;
         _data = new char[_size];
 
@@ -28,7 +33,7 @@ public:
     }
 
     //Конструктор перемещения
-    String(String&& s){
+    String(String&& s) noexcept {
 
         //Копируем данные
         _size = s._size;
@@ -55,7 +60,23 @@ public:
         _size = s._size;
         _data = s._data;
 
-        cout << "[" << this << "]" << " - Operator = has been called" << endl;
+        cout << "[" << this << "]" << " - COPY operator = has been called" << endl;
+
+        return *this;
+    }
+
+    //Перемещающий оператор присваивания
+    String& operator=(String&& s) noexcept {
+
+        //Копируем данные
+        _size = s._size;
+        _data = s._data;
+
+        //Очищаем исходный объект (у которого забираем данные)
+        s._data = nullptr;
+        s._size = 0;
+
+        cout << "[" << this << "]" << " - MOVE operator = has been called" << endl;
 
         return *this;
     }
@@ -69,7 +90,7 @@ public:
     }
 
     //Деструктор
-    ~String() {
+    ~String() noexcept {
         cout << "[" << this << "]" << " - destructor has been called for object " << endl;
         _data = nullptr;
     }
@@ -98,6 +119,11 @@ int main()
     //Проверяем перемещающий конструктор
     String str2(move(str1));
     str1.print();
+    str2.print();
+
+    //Проверяем перемещающий оператор присваивания
+    str2 = move(mstr);
+    mstr.print();
     str2.print();
 
     return 0;
